@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Meditation in WebXR</title>
+    <meta name="description" content="A calming meditation experience in WebXR.">
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-environment-component@1.3.0/dist/aframe-environment-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-animation-component@5.1.2/dist/aframe-animation-component.min.js"></script>
+  </head>
+  <body>
+    <a-scene vr-mode-ui="enabled: true" xr-mode-ui="enabled: true">
+      <!-- Assets -->
+      <a-assets>
+        <!-- Background images -->
+        <img id="forest" src="https://ucarecdn.com/25f9d8bc-9fcd-4c57-9358-c64e47baa0c5/">
+        <img id="mountains" src="https://cdn.glitch.com/c0053b46-e734-45e3-b54d-7b22d4c67c09%2Fmountain1.jpg?1494774062565">
+        
+        <!-- Audio -->
+        <audio id="calm-music" src="https://cdn.glitch.com/b4f4d521-4cdc-400e-a428-c1b11013cb06%2F1ambiance.aac?1494793522720"></audio>
+      </a-assets>
+
+      <!-- Scene Background -->
+      <a-sky id="background" src="#forest"></a-sky>
+
+      <!-- Environment -->
+      <a-entity environment="preset: forest; dressingAmount: 100;"></a-entity>
+
+      <!-- Meditation Cursor -->
+      <a-camera>
+        <a-cursor id="cursor" color="white" opacity="0.5"></a-cursor>
+      </a-camera>
+
+      <!-- UI for Scene Selection -->
+      <a-entity id="ui" position="0 1.6 -2">
+        <a-text value="Choose Your Meditation Scene" color="white" align="center" position="0 0.5 0"></a-text>
+        <a-box id="forest-button" color="green" position="-0.5 0 0" event-set__enter="_event: mouseenter; scale: 1.2 1.2 1.2"
+               event-set__leave="_event: mouseleave; scale: 1 1 1" event-set__click="_event: click; src: #forest"></a-box>
+        <a-text value="Forest" color="white" position="-0.5 -0.3 0" align="center"></a-text>
+        
+        <a-box id="mountain-button" color="brown" position="0.5 0 0" event-set__enter="_event: mouseenter; scale: 1.2 1.2 1.2"
+               event-set__leave="_event: mouseleave; scale: 1 1 1" event-set__click="_event: click; src: #mountains"></a-box>
+        <a-text value="Mountains" color="white" position="0.5 -0.3 0" align="center"></a-text>
+      </a-entity>
+
+      <!-- Audio Controller -->
+      <a-entity id="audio-controller" sound="src: #calm-music; autoplay: true; loop: true; volume: 0.5"></a-entity>
+    </a-scene>
+
+    <script>
+      // Add interactivity to change scenes
+      const background = document.querySelector('#background');
+      const cursor = document.querySelector('#cursor');
+
+      // Event listeners for scene selection
+      document.querySelector('#forest-button').addEventListener('click', () => {
+        background.setAttribute('src', '#forest');
+        cursor.setAttribute('color', 'green');
+      });
+
+      document.querySelector('#mountain-button').addEventListener('click', () => {
+        background.setAttribute('src', '#mountains');
+        cursor.setAttribute('color', 'brown');
+      });
+
+      // Enable WebXR
+      if (navigator.xr) {
+        navigator.xr.isSessionSupported('immersive-vr').then((supported) => {
+          if (supported) {
+            console.log('WebXR is supported!');
+          } else {
+            console.log('WebXR is not supported.');
+          }
+        });
+      }
+    </script>
+  </body>
+</html>
